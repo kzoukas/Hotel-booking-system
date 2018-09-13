@@ -1,0 +1,1168 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.2.8
+-- Dumped by pg_dump version 9.2.8
+-- Started on 2014-06-03 16:51:22
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 182 (class 3079 OID 11727)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2062 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- TOC entry 211 (class 1255 OID 58576)
+-- Name: delete_client_creditcard(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_client_creditcard(clienttobedeleted integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN 
+
+ DELETE FROM "creditcard" as cu1
+  WHERE cu1."clientID"=clienttobeDeleted;
+
+DELETE FROM hotelbooking."bookedbyClientID" as cu2
+where cu2=clienttobeDeleted;
+
+  DELETE FROM "client" as cu3
+  WHERE cu3."idClient"=clienttobeDeleted;
+
+   
+END$$;
+
+
+ALTER FUNCTION public.delete_client_creditcard(clienttobedeleted integer) OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1255 OID 58575)
+-- Name: delete_creditcard(character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_creditcard(dcardnumber character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN 
+  DELETE FROM "creditcard" as cu
+  WHERE cu."number"=dcardnumber;
+END$$;
+
+
+ALTER FUNCTION public.delete_creditcard(dcardnumber character varying) OWNER TO postgres;
+
+--
+-- TOC entry 197 (class 1255 OID 41366)
+-- Name: delete_employee(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_employee(id_employee_tobedeleted integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+
+	--DELETE FROM person
+	--where person."idPerson"=id_employee_toBeDeleted; 
+	DELETE FROM employee
+	where employee."idEmployee"=id_employee_toBeDeleted; 
+END$$;
+
+
+ALTER FUNCTION public.delete_employee(id_employee_tobedeleted integer) OWNER TO postgres;
+
+--
+-- TOC entry 195 (class 1255 OID 49608)
+-- Name: delete_hotel(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_hotel(id_hotel integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+
+	DELETE FROM hotel
+	where hotel."idHotel"=id_hotel; 
+END$$;
+
+
+ALTER FUNCTION public.delete_hotel(id_hotel integer) OWNER TO postgres;
+
+--
+-- TOC entry 212 (class 1255 OID 58577)
+-- Name: delete_hotelfacilities(integer, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_hotelfacilities(fidhotel integer, fnamefacility character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN 
+  DELETE FROM "hotelfacilities" as cu
+  WHERE cu."idhotel"=fidhotel and "fnamefacility"=fnamefacility;
+END$$;
+
+
+ALTER FUNCTION public.delete_hotelfacilities(fidhotel integer, fnamefacility character varying) OWNER TO postgres;
+
+--
+-- TOC entry 196 (class 1255 OID 41365)
+-- Name: delete_person(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_person(id_person integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+
+	DELETE FROM person
+	where person."idPerson"=id_person; 
+END$$;
+
+
+ALTER FUNCTION public.delete_person(id_person integer) OWNER TO postgres;
+
+--
+-- TOC entry 213 (class 1255 OID 58578)
+-- Name: delete_room(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_room(fidroom integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN 
+  DELETE FROM "room" as cu
+  WHERE cu."idroom"=fidroom;
+END$$;
+
+
+ALTER FUNCTION public.delete_room(fidroom integer) OWNER TO postgres;
+
+--
+-- TOC entry 214 (class 1255 OID 58579)
+-- Name: delete_travelagent(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION delete_travelagent(fidtravelagent integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN 
+  DELETE FROM "travelagent" as cu
+  WHERE cu."idtravelagent"=fidtravelagent;
+END$$;
+
+
+ALTER FUNCTION public.delete_travelagent(fidtravelagent integer) OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1255 OID 58515)
+-- Name: insert_client(integer, character varying, character varying, integer, date, character varying, character varying, character varying, integer, character varying, character varying, character varying, date, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION insert_client(idperson integer, firstname character varying, lastname character varying, sex integer, dateofbirth date, address character varying, city character varying, country character varying, idclient integer, documentclient character varying, cardtype character varying, num character varying, expiration date, holder character varying, clientid integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+
+	insert into person values(idPerson,firstname ,lastname,sex,dateofBirth,address,city,country);
+	insert into client values (idClient,documentClient);
+	insert into creditcard values (cardtype,num,expiration,holder,clientID);
+END$$;
+
+
+ALTER FUNCTION public.insert_client(idperson integer, firstname character varying, lastname character varying, sex integer, dateofbirth date, address character varying, city character varying, country character varying, idclient integer, documentclient character varying, cardtype character varying, num character varying, expiration date, holder character varying, clientid integer) OWNER TO postgres;
+
+--
+-- TOC entry 201 (class 1255 OID 58525)
+-- Name: insert_employee(integer, character varying, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION insert_employee(idemployee integer, emp_role character varying, idmanager integer, hotelid integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	INSERT INTO "employee" VALUES(idemployee,emp_role,idmanager,hotelid);
+END$$;
+
+
+ALTER FUNCTION public.insert_employee(idemployee integer, emp_role character varying, idmanager integer, hotelid integer) OWNER TO postgres;
+
+--
+-- TOC entry 205 (class 1255 OID 58527)
+-- Name: insert_hotel(integer, character varying, character varying, character varying, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION insert_hotel(idhotel integer, hotel_name character varying, stars character varying, address character varying, city character varying, country character varying, phone character varying, fax character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	INSERT INTO "hotel" VALUES(idhotel,hotel_name,stars,address,city,country,phone,fax);
+END$$;
+
+
+ALTER FUNCTION public.insert_hotel(idhotel integer, hotel_name character varying, stars character varying, address character varying, city character varying, country character varying, phone character varying, fax character varying) OWNER TO postgres;
+
+--
+-- TOC entry 206 (class 1255 OID 58528)
+-- Name: insert_hotelfacilities(integer, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION insert_hotelfacilities(idhotel integer, namefacility character varying, description character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	INSERT INTO "hotelfacilities" VALUES(idhotel,namefacility,description);
+END$$;
+
+
+ALTER FUNCTION public.insert_hotelfacilities(idhotel integer, namefacility character varying, description character varying) OWNER TO postgres;
+
+--
+-- TOC entry 207 (class 1255 OID 58529)
+-- Name: insert_room(integer, integer, integer, double precision, integer, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION insert_room(idroom integer, roomnumber integer, vacant integer, area double precision, hotelid integer, roomtype character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	INSERT INTO "room" VALUES(idroom,roomnumber,vacant,area,hotelid,roomtype);
+END$$;
+
+
+ALTER FUNCTION public.insert_room(idroom integer, roomnumber integer, vacant integer, area double precision, hotelid integer, roomtype character varying) OWNER TO postgres;
+
+--
+-- TOC entry 209 (class 1255 OID 58573)
+-- Name: insert_roombooking(integer, integer, integer, date, date, date, double precision); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION insert_roombooking(hotelbookingid integer, roomid integer, bookedforepersonid integer, checkin date, checkout date, cancelationdtate date, rate double precision) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	INSERT INTO "roombooking" VALUES(hotelbookingID ,roomid,bookedforepersonid , checkin ,checkout ,cancelationdtate ,rate);
+END$$;
+
+
+ALTER FUNCTION public.insert_roombooking(hotelbookingid integer, roomid integer, bookedforepersonid integer, checkin date, checkout date, cancelationdtate date, rate double precision) OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1255 OID 58531)
+-- Name: insert_roomfacilities_roomtype_roomrate(integer, character varying, character varying, character varying, integer, integer, character varying, double precision, double precision); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION insert_roomfacilities_roomtype_roomrate(idroom integer, namefacility character varying, description character varying, typename character varying, samplephoto integer, hotelid integer, roomtype character varying, rate double precision, discount double precision) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+
+	
+	INSERT INTO "roomtype" VALUES(typename,samplephoto);
+	INSERT INTO "roomrate" VALUES(hotelID ,roomtype  ,rate ,discount );
+	INSERT INTO "roomfacilities" VALUES(idroom , nameFacility  , description);
+END$$;
+
+
+ALTER FUNCTION public.insert_roomfacilities_roomtype_roomrate(idroom integer, namefacility character varying, description character varying, typename character varying, samplephoto integer, hotelid integer, roomtype character varying, rate double precision, discount double precision) OWNER TO postgres;
+
+--
+-- TOC entry 204 (class 1255 OID 58526)
+-- Name: insert_travelagent(integer, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION insert_travelagent(idtravelagent integer, agentname character varying, email character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+  	INSERT INTO "travelagent" VALUES(idtravelagent,agentname,email);
+END$$;
+
+
+ALTER FUNCTION public.insert_travelagent(idtravelagent integer, agentname character varying, email character varying) OWNER TO postgres;
+
+--
+-- TOC entry 198 (class 1255 OID 58488)
+-- Name: search_hotels_by_hotelfacilities(character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION search_hotels_by_hotelfacilities(namefacility_find character varying) RETURNS SETOF integer
+    LANGUAGE plpgsql STABLE
+    AS $$
+
+BEGIN
+
+  RETURN QUERY(
+   SELECT "idHotel"
+   FROM hotelfacilities 
+   WHERE hotelfacilities."nameFacility" = namefacility_find
+  );
+  
+  
+END;
+$$;
+
+
+ALTER FUNCTION public.search_hotels_by_hotelfacilities(namefacility_find character varying) OWNER TO postgres;
+
+--
+-- TOC entry 199 (class 1255 OID 58490)
+-- Name: search_hotels_by_room_hotel_facilities(character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION search_hotels_by_room_hotel_facilities(hotel_namefacility_find character varying, room_namefacility_find character varying) RETURNS SETOF integer
+    LANGUAGE plpgsql STABLE
+    AS $$
+
+BEGIN
+
+RETURN QUERY(
+  SELECT search_hotels_by_hotelfacilities(hotel_namefacility_find)
+  INTERSECT
+  SELECT search_hotels_by_roomfacilities(room_namefacility_find)
+ );
+
+ END;
+$$;
+
+
+ALTER FUNCTION public.search_hotels_by_room_hotel_facilities(hotel_namefacility_find character varying, room_namefacility_find character varying) OWNER TO postgres;
+
+--
+-- TOC entry 200 (class 1255 OID 58489)
+-- Name: search_hotels_by_roomfacilities(character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION search_hotels_by_roomfacilities(namefacility_find character varying) RETURNS SETOF integer
+    LANGUAGE plpgsql STABLE
+    AS $$
+
+BEGIN
+
+  RETURN QUERY(
+   SELECT "hotelID"
+   FROM room join roomfacilities on ( roomfacilities."IDroom"= room."idRoom")
+   WHERE (roomfacilities."nameFacility" = namefacility_find) AND (room.vacant='1')
+  );
+  
+  
+END;
+$$;
+
+
+ALTER FUNCTION public.search_hotels_by_roomfacilities(namefacility_find character varying) OWNER TO postgres;
+
+--
+-- TOC entry 203 (class 1255 OID 58518)
+-- Name: search_roomfacilities_vacant_eight(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION search_roomfacilities_vacant_eight() RETURNS SETOF integer
+    LANGUAGE plpgsql STABLE
+    AS $$
+
+BEGIN
+
+  RETURN QUERY(
+   select "nameFacility" 
+from hotelfacilities join (select room."hotelID" from room 
+where room.vacant=1 
+group by "hotelID" 
+having count(distinct room.roomtype)>8) ss on (ss."hotelID"=hotelfacilities."idHotel")
+  );
+  
+  
+END;
+$$;
+
+
+ALTER FUNCTION public.search_roomfacilities_vacant_eight() OWNER TO postgres;
+
+--
+-- TOC entry 222 (class 1255 OID 58588)
+-- Name: serch_hotel_3_3(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION serch_hotel_3_3(bookedforperson_find integer) RETURNS SETOF integer
+    LANGUAGE plpgsql STABLE
+    AS $$
+
+BEGIN
+
+  RETURN QUERY(
+select room."hotelID" from room 
+where room.vacant=1 
+group by "hotelID" having count(distinct room.roomtype)=10
+);
+  
+  
+END;
+$$;
+
+
+ALTER FUNCTION public.serch_hotel_3_3(bookedforperson_find integer) OWNER TO postgres;
+
+--
+-- TOC entry 218 (class 1255 OID 58586)
+-- Name: update_client(integer, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION update_client(fidclient integer, fdocumentclient character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+   UPDATE "client" as cu SET "documentclient"=fdocumentclient WHERE cu."idClient" = fidclient;
+
+END$$;
+
+
+ALTER FUNCTION public.update_client(fidclient integer, fdocumentclient character varying) OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1255 OID 58585)
+-- Name: update_creditcard(character varying, character varying, date, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION update_creditcard(fcardtype character varying, fcardnumber character varying, fexpirationdate date, fholder character varying, fclientid integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+   UPDATE "creditcard" as cu SET "expirationdate"=fexpirationdate WHERE cu."clientID" = fclientid and cu."number" = fcardnumber;
+END$$;
+
+
+ALTER FUNCTION public.update_creditcard(fcardtype character varying, fcardnumber character varying, fexpirationdate date, fholder character varying, fclientid integer) OWNER TO postgres;
+
+--
+-- TOC entry 220 (class 1255 OID 58587)
+-- Name: update_employee(integer, character varying, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION update_employee(fidemployee integer, frole character varying, fidmanager integer, fhotelid integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+   UPDATE "employee" as cu SET "role"=frole,"idmanager"=fidmanager,"hotelID"=fhotelid WHERE cu."idEmployee" = fidemployee;
+END$$;
+
+
+ALTER FUNCTION public.update_employee(fidemployee integer, frole character varying, fidmanager integer, fhotelid integer) OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1255 OID 58583)
+-- Name: update_hotel(integer, character varying, character varying, character varying, character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION update_hotel(fidhotel integer, fhotel_name character varying, fstars character varying, faddress character varying, fcity character varying, fcountry character varying, fphone character varying, ffax character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+   UPDATE "hotel" as cu SET "name"=fhotel_name,"stars"=fstars,"phone"=fphone,"fax"=ffax WHERE cu."idHotel" = fidhotel ;
+END$$;
+
+
+ALTER FUNCTION public.update_hotel(fidhotel integer, fhotel_name character varying, fstars character varying, faddress character varying, fcity character varying, fcountry character varying, fphone character varying, ffax character varying) OWNER TO postgres;
+
+--
+-- TOC entry 215 (class 1255 OID 58582)
+-- Name: update_hotelfacilities(integer, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION update_hotelfacilities(fidhotel integer, fnamefacility character varying, fdescription character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+   UPDATE "hotelfacilities" as cu SET "nameFacility"=fnamefacility, "description"=fdescription WHERE cu."idHotel" = fidhotel;
+END$$;
+
+
+ALTER FUNCTION public.update_hotelfacilities(fidhotel integer, fnamefacility character varying, fdescription character varying) OWNER TO postgres;
+
+--
+-- TOC entry 216 (class 1255 OID 58581)
+-- Name: update_room(integer, integer, integer, double precision, integer, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION update_room(fidroom integer, froomnumber integer, fvacant integer, farea double precision, fhotelid integer, froomtype character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+   UPDATE "room" as cu SET "number"=froomnumber,"vacant"=fvacant,"roomType"=froomtype WHERE cu."idRoom" = fidroom ;
+END$$;
+
+
+ALTER FUNCTION public.update_room(fidroom integer, froomnumber integer, fvacant integer, farea double precision, fhotelid integer, froomtype character varying) OWNER TO postgres;
+
+--
+-- TOC entry 217 (class 1255 OID 58580)
+-- Name: update_travelagent(integer, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION update_travelagent(fidtravelagent integer, fagentname character varying, femail character varying) RETURNS void
+    LANGUAGE plpgsql
+    AS $$BEGIN
+   UPDATE "travelagent" as cu SET "agentname"=fagentname,"email"=femail WHERE cu."idTravelAgent" = fidtravelagent;
+END$$;
+
+
+ALTER FUNCTION public.update_travelagent(fidtravelagent integer, fagentname character varying, femail character varying) OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 170 (class 1259 OID 24588)
+-- Name: client; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE client (
+    "idClient" integer NOT NULL,
+    documentclient character(45)
+);
+
+
+ALTER TABLE public.client OWNER TO postgres;
+
+--
+-- TOC entry 169 (class 1259 OID 24583)
+-- Name: creditcard; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE creditcard (
+    cardtype character(30) NOT NULL,
+    number character(45) NOT NULL,
+    expiration date,
+    holder character(45),
+    "clientID" integer NOT NULL
+);
+
+
+ALTER TABLE public.creditcard OWNER TO postgres;
+
+--
+-- TOC entry 2063 (class 0 OID 0)
+-- Dependencies: 169
+-- Name: COLUMN creditcard.expiration; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN creditcard.expiration IS '
+';
+
+
+--
+-- TOC entry 177 (class 1259 OID 41382)
+-- Name: employee; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE employee (
+    "idEmployee" integer NOT NULL,
+    role character(45),
+    idmanager integer,
+    "hotelID" integer
+);
+
+
+ALTER TABLE public.employee OWNER TO postgres;
+
+--
+-- TOC entry 171 (class 1259 OID 24629)
+-- Name: facility; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE facility (
+    "nameFacility" character varying(45) NOT NULL,
+    parentnamefacility character varying(45),
+    description character varying(45)
+);
+
+
+ALTER TABLE public.facility OWNER TO postgres;
+
+--
+-- TOC entry 172 (class 1259 OID 32768)
+-- Name: hotel; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE hotel (
+    "idHotel" integer NOT NULL,
+    name character varying(45) NOT NULL,
+    stars character varying(10) NOT NULL,
+    address character varying(75) NOT NULL,
+    city character varying(45) NOT NULL,
+    country character varying(45) NOT NULL,
+    phone character varying(25) NOT NULL,
+    fax character varying(25) NOT NULL
+);
+
+
+ALTER TABLE public.hotel OWNER TO postgres;
+
+--
+-- TOC entry 173 (class 1259 OID 32777)
+-- Name: hotelbooking; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE hotelbooking (
+    idhotelbooking integer NOT NULL,
+    "reservationDate" date,
+    cancelationdate date,
+    totalamount real,
+    payed real,
+    status integer,
+    "bookedbyClientID" integer
+);
+
+
+ALTER TABLE public.hotelbooking OWNER TO postgres;
+
+--
+-- TOC entry 2064 (class 0 OID 0)
+-- Dependencies: 173
+-- Name: COLUMN hotelbooking.cancelationdate; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN hotelbooking.cancelationdate IS '
+
+';
+
+
+--
+-- TOC entry 2065 (class 0 OID 0)
+-- Dependencies: 173
+-- Name: COLUMN hotelbooking.totalamount; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN hotelbooking.totalamount IS '
+';
+
+
+--
+-- TOC entry 174 (class 1259 OID 32789)
+-- Name: hotelfacilities; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE hotelfacilities (
+    "idHotel" integer NOT NULL,
+    "nameFacility" character varying(45) NOT NULL,
+    description character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.hotelfacilities OWNER TO postgres;
+
+--
+-- TOC entry 168 (class 1259 OID 24577)
+-- Name: person; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE person (
+    "idPerson" integer NOT NULL,
+    fname character(45),
+    lname character(45),
+    sex integer,
+    datebirth date,
+    city character(45),
+    country character(45),
+    address character(75)
+);
+
+
+ALTER TABLE public.person OWNER TO postgres;
+
+--
+-- TOC entry 180 (class 1259 OID 58554)
+-- Name: room; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE room (
+    "idRoom" integer NOT NULL,
+    number integer NOT NULL,
+    vacant smallint NOT NULL,
+    area real,
+    "hotelID" integer NOT NULL,
+    roomtype character varying(45)
+);
+
+
+ALTER TABLE public.room OWNER TO postgres;
+
+--
+-- TOC entry 181 (class 1259 OID 58781)
+-- Name: roombooking; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE roombooking (
+    "hotelbookingID" integer NOT NULL,
+    "roomID" integer NOT NULL,
+    "bookedforpersonID" integer NOT NULL,
+    checkin date NOT NULL,
+    checkout date NOT NULL,
+    cancelationdate date,
+    rate double precision
+);
+
+
+ALTER TABLE public.roombooking OWNER TO postgres;
+
+--
+-- TOC entry 175 (class 1259 OID 32880)
+-- Name: roomfacilities; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE roomfacilities (
+    "IDroom" integer NOT NULL,
+    "nameFacility" character varying(45) NOT NULL,
+    description character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.roomfacilities OWNER TO postgres;
+
+--
+-- TOC entry 179 (class 1259 OID 58539)
+-- Name: roomrate; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE roomrate (
+    "hotelID" integer NOT NULL,
+    roomtype character varying(45) NOT NULL,
+    rate real,
+    discount real
+);
+
+
+ALTER TABLE public.roomrate OWNER TO postgres;
+
+--
+-- TOC entry 178 (class 1259 OID 58534)
+-- Name: roomtype; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE roomtype (
+    typename character varying(45) NOT NULL,
+    samplephoto integer
+);
+
+
+ALTER TABLE public.roomtype OWNER TO postgres;
+
+--
+-- TOC entry 176 (class 1259 OID 32905)
+-- Name: travelagent; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE travelagent (
+    "idTravelAgent" integer NOT NULL,
+    agentname character varying(45),
+    email character varying(45)
+);
+
+
+ALTER TABLE public.travelagent OWNER TO postgres;
+
+--
+-- TOC entry 2043 (class 0 OID 24588)
+-- Dependencies: 170
+-- Data for Name: client; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY client ("idClient", documentclient) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2042 (class 0 OID 24583)
+-- Dependencies: 169
+-- Data for Name: creditcard; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY creditcard (cardtype, number, expiration, holder, "clientID") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2050 (class 0 OID 41382)
+-- Dependencies: 177
+-- Data for Name: employee; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY employee ("idEmployee", role, idmanager, "hotelID") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2044 (class 0 OID 24629)
+-- Dependencies: 171
+-- Data for Name: facility; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY facility ("nameFacility", parentnamefacility, description) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2045 (class 0 OID 32768)
+-- Dependencies: 172
+-- Data for Name: hotel; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY hotel ("idHotel", name, stars, address, city, country, phone, fax) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2046 (class 0 OID 32777)
+-- Dependencies: 173
+-- Data for Name: hotelbooking; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY hotelbooking (idhotelbooking, "reservationDate", cancelationdate, totalamount, payed, status, "bookedbyClientID") FROM stdin;
+\.
+
+
+--
+-- TOC entry 2047 (class 0 OID 32789)
+-- Dependencies: 174
+-- Data for Name: hotelfacilities; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY hotelfacilities ("idHotel", "nameFacility", description) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2041 (class 0 OID 24577)
+-- Dependencies: 168
+-- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY person ("idPerson", fname, lname, sex, datebirth, city, country, address) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2053 (class 0 OID 58554)
+-- Dependencies: 180
+-- Data for Name: room; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY room ("idRoom", number, vacant, area, "hotelID", roomtype) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2054 (class 0 OID 58781)
+-- Dependencies: 181
+-- Data for Name: roombooking; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY roombooking ("hotelbookingID", "roomID", "bookedforpersonID", checkin, checkout, cancelationdate, rate) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2048 (class 0 OID 32880)
+-- Dependencies: 175
+-- Data for Name: roomfacilities; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY roomfacilities ("IDroom", "nameFacility", description) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2052 (class 0 OID 58539)
+-- Dependencies: 179
+-- Data for Name: roomrate; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY roomrate ("hotelID", roomtype, rate, discount) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2051 (class 0 OID 58534)
+-- Dependencies: 178
+-- Data for Name: roomtype; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY roomtype (typename, samplephoto) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2049 (class 0 OID 32905)
+-- Dependencies: 176
+-- Data for Name: travelagent; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY travelagent ("idTravelAgent", agentname, email) FROM stdin;
+\.
+
+
+--
+-- TOC entry 1893 (class 2606 OID 40966)
+-- Name: documentclient_UNIQUE; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY client
+    ADD CONSTRAINT "documentclient_UNIQUE" UNIQUE (documentclient);
+
+
+--
+-- TOC entry 1899 (class 2606 OID 40985)
+-- Name: fax_UNIQUE; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY hotel
+    ADD CONSTRAINT "fax_UNIQUE" UNIQUE (fax);
+
+
+--
+-- TOC entry 1921 (class 2606 OID 58560)
+-- Name: idRoom_UNIQUE; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY room
+    ADD CONSTRAINT "idRoom_UNIQUE" UNIQUE ("idRoom");
+
+
+--
+-- TOC entry 1923 (class 2606 OID 58562)
+-- Name: number_UNIQUE; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY room
+    ADD CONSTRAINT "number_UNIQUE" UNIQUE (number);
+
+
+--
+-- TOC entry 1902 (class 2606 OID 40983)
+-- Name: phone_UNIQUE; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY hotel
+    ADD CONSTRAINT "phone_UNIQUE" UNIQUE (phone);
+
+
+--
+-- TOC entry 1905 (class 2606 OID 32772)
+-- Name: pk_IDhotel; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY hotel
+    ADD CONSTRAINT "pk_IDhotel" PRIMARY KEY ("idHotel");
+
+
+--
+-- TOC entry 1891 (class 2606 OID 24616)
+-- Name: pk_creditcard; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY creditcard
+    ADD CONSTRAINT pk_creditcard PRIMARY KEY (cardtype, number, "clientID");
+
+
+--
+-- TOC entry 1915 (class 2606 OID 41386)
+-- Name: pk_employee; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY employee
+    ADD CONSTRAINT pk_employee PRIMARY KEY ("idEmployee");
+
+
+--
+-- TOC entry 1897 (class 2606 OID 24633)
+-- Name: pk_facility; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY facility
+    ADD CONSTRAINT pk_facility PRIMARY KEY ("nameFacility");
+
+
+--
+-- TOC entry 1909 (class 2606 OID 32793)
+-- Name: pk_hotelfacilities; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY hotelfacilities
+    ADD CONSTRAINT pk_hotelfacilities PRIMARY KEY ("idHotel", "nameFacility");
+
+
+--
+-- TOC entry 1895 (class 2606 OID 24592)
+-- Name: pk_idClient; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY client
+    ADD CONSTRAINT "pk_idClient" PRIMARY KEY ("idClient");
+
+
+--
+-- TOC entry 1889 (class 2606 OID 24587)
+-- Name: pk_idPerson; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY person
+    ADD CONSTRAINT "pk_idPerson" PRIMARY KEY ("idPerson");
+
+
+--
+-- TOC entry 1907 (class 2606 OID 32781)
+-- Name: pk_idhotelbooking; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY hotelbooking
+    ADD CONSTRAINT pk_idhotelbooking PRIMARY KEY (idhotelbooking);
+
+
+--
+-- TOC entry 1925 (class 2606 OID 58558)
+-- Name: pk_room; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY room
+    ADD CONSTRAINT pk_room PRIMARY KEY ("idRoom", "hotelID");
+
+
+--
+-- TOC entry 1927 (class 2606 OID 58785)
+-- Name: pk_roombooking; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY roombooking
+    ADD CONSTRAINT pk_roombooking PRIMARY KEY ("hotelbookingID", "roomID");
+
+
+--
+-- TOC entry 1911 (class 2606 OID 32884)
+-- Name: pk_roomfacilities; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY roomfacilities
+    ADD CONSTRAINT pk_roomfacilities PRIMARY KEY ("IDroom", "nameFacility");
+
+
+--
+-- TOC entry 1919 (class 2606 OID 58543)
+-- Name: pk_roomrate; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY roomrate
+    ADD CONSTRAINT pk_roomrate PRIMARY KEY ("hotelID", roomtype);
+
+
+--
+-- TOC entry 1913 (class 2606 OID 32909)
+-- Name: pk_travelagent; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY travelagent
+    ADD CONSTRAINT pk_travelagent PRIMARY KEY ("idTravelAgent");
+
+
+--
+-- TOC entry 1917 (class 2606 OID 58538)
+-- Name: pk_typename; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY roomtype
+    ADD CONSTRAINT pk_typename PRIMARY KEY (typename);
+
+
+--
+-- TOC entry 1900 (class 1259 OID 32912)
+-- Name: fax_UNIQUE_index; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE UNIQUE INDEX "fax_UNIQUE_index" ON hotel USING btree (fax);
+
+
+--
+-- TOC entry 1903 (class 1259 OID 32911)
+-- Name: phone_UNIQUE_index; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE UNIQUE INDEX "phone_UNIQUE_index" ON hotel USING btree (phone);
+
+
+--
+-- TOC entry 1931 (class 2606 OID 58544)
+-- Name: fk_hotelID; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY roomrate
+    ADD CONSTRAINT "fk_hotelID" FOREIGN KEY ("hotelID") REFERENCES hotel("idHotel");
+
+
+--
+-- TOC entry 1933 (class 2606 OID 58563)
+-- Name: fk_hotelID; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY room
+    ADD CONSTRAINT "fk_hotelID" FOREIGN KEY ("hotelID") REFERENCES hotel("idHotel");
+
+
+--
+-- TOC entry 1929 (class 2606 OID 32799)
+-- Name: fk_idHotel; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY hotelfacilities
+    ADD CONSTRAINT "fk_idHotel" FOREIGN KEY ("idHotel") REFERENCES hotel("idHotel");
+
+
+--
+-- TOC entry 1928 (class 2606 OID 32794)
+-- Name: fk_namefacility; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY hotelfacilities
+    ADD CONSTRAINT fk_namefacility FOREIGN KEY ("nameFacility") REFERENCES facility("nameFacility");
+
+
+--
+-- TOC entry 1930 (class 2606 OID 32885)
+-- Name: fk_namefacility; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY roomfacilities
+    ADD CONSTRAINT fk_namefacility FOREIGN KEY ("nameFacility") REFERENCES facility("nameFacility");
+
+
+--
+-- TOC entry 1932 (class 2606 OID 58549)
+-- Name: fk_roomtype; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY roomrate
+    ADD CONSTRAINT fk_roomtype FOREIGN KEY (roomtype) REFERENCES roomtype(typename);
+
+
+--
+-- TOC entry 1934 (class 2606 OID 58568)
+-- Name: fk_roomtype; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY room
+    ADD CONSTRAINT fk_roomtype FOREIGN KEY (roomtype) REFERENCES roomtype(typename);
+
+
+--
+-- TOC entry 2061 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2014-06-03 16:51:23
+
+--
+-- PostgreSQL database dump complete
+--
+
