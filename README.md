@@ -1,2 +1,3 @@
 # hotel-booking-system
-# 3D-bowling-game
+Requirements analysis, conceptual logical and physical database design, transaction processing and performance optimization.
+Implemented with Java and PostgreSQL
